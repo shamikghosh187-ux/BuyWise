@@ -111,9 +111,9 @@ export default function Home() {
             <select className="sort-select" value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort products"><option value="relevance">Relevance</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="rating">Top rated</option></select>
           </div>
           {view === "discover" && marketSummary.sampleSize > 0 && <div className="market-summary">
-            <div><span>LOWEST OBSERVED</span><strong>{money(marketSummary.lowest)}</strong></div>
-            <div><span>SEARCH MEDIAN</span><strong>{money(marketSummary.median)}</strong></div>
-            <div><span>HIGHEST OBSERVED</span><strong>{money(marketSummary.highest)}</strong></div>
+            <div><span>LOWEST OBSERVED</span><strong>{money(marketSummary.lowest ?? 0)}</strong></div>
+            <div><span>SEARCH MEDIAN</span><strong>{money(marketSummary.median ?? 0)}</strong></div>
+            <div><span>HIGHEST OBSERVED</span><strong>{money(marketSummary.highest ?? 0)}</strong></div>
             <p>Snapshot from {marketSummary.sampleSize} listings with numeric prices in this search. Not historical price data.</p>
           </div>}
 
