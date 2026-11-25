@@ -5,7 +5,7 @@ import { getMarketSummary } from "@/lib/products/analytics.js";
 import { sortOffers } from "@/lib/products/sort.js";
 import { readWatchlist, writeWatchlist } from "@/lib/products/storage.js";
 import { validateProductQuery } from "@/lib/search/query.js";
-import { formatInr, formatRetrievedAt } from "@/lib/products/format.js";
+import { formatRetrievedAt } from "@/lib/products/format.js";
 import { MarketSummary } from "@/components/products/MarketSummary";
 import { PricePosition } from "@/components/products/PricePosition";
 
@@ -17,7 +17,6 @@ type Product = {
 type SearchResponse = { products: Product[]; resultCount: number; updatedAt: string; source: string; error?: string; code?: string };
 
 const categories = ["Phones", "Laptops", "Headphones", "Watches", "Cameras", "Home appliances"];
-const money = formatInr;
 
 export default function Home() {
   const [query, setQuery] = useState("");
