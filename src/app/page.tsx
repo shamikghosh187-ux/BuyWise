@@ -44,6 +44,7 @@ export default function Home(){
   const toggleSaved=(id:number)=>setSaved(current=>current.includes(id)?current.filter(x=>x!==id):[...current,id]);
   const toggleCompare=(id:number)=>setCompare(current=>current.includes(id)?current.filter(x=>x!==id):current.length<3?[...current,id]:current);
   const selected=products.filter(p=>compare.includes(p.id));
+  const comparisonRows: [string,(p:Product)=>string][] = [["Brand",p=>p.brand],["Category",p=>p.category],["Indicative price",p=>money(p.price)],["Sample rating",p=>"★ "+p.rating+"/5"],["Value indicator",p=>p.score+"/100"],...Object.keys(selected[0]?.specs||{}).map(k=>[k,(p:Product)=>p.specs[k]||"—"] as [string,(p:Product)=>string])];
 
   return <main className="app-shell">
     <header className="topbar">
@@ -93,7 +94,7 @@ export default function Home(){
           </article>)}</div>
           {visible.length===0&&<div className="empty-state">{view==="watchlist"?"Your watchlist is empty. Save a product using the heart icon.":"No matching products. Try a different search or category."}</div>}
         </>}
-        {view==="compare"&&(selected.length===0?<div className="empty-state">Your comparison is empty. Add up to three products from Discover.</div>:<div className="compare-table-wrap"><table className="compare-table"><thead><tr><th>What matters</th>{selected.map(p=><th key={p.id}>{p.emoji} {p.name}</th>)}</tr></thead><tbody>{[["Brand",(p:Product)=>p.brand],["Category",(p:Product)=>p.category],["Indicative price",(p:Product)=>money(p.price)],["Sample rating",(p:Product)=>"★ "+p.rating+"/5"],["Value indicator",(p:Product)=>p.score+"/100"],...Object.keys(selected[0].specs).map(k=>[k,(p:Product)=>p.specs[k]||"—"] as [string,(p:Product)=>string])].map(([label,fn])=><tr key={label}><td>{label}</td>{selected.map(p=><td key={p.id}>{fn(p)}</td>)}</tr>)}</tbody></table><button className="text-btn" onClick={()=>setCompare([])}>Clear comparison ×</button></div>)}
+        {view==="compare"&&(selected.length===0?<div className="empty-state">Your comparison is empty. Add up to three products from Discover.</div>:<div className="compare-table-wrap"><table className="compare-table"><thead><tr><th>What matters</th>{selected.map(p=><th key={p.id}>{p.emoji} {p.name}</th>)}</tr></thead><tbody>{comparisonRows.map(([label,fn])=><tr key={label}><td>{label}</td>{selected.map(p=><td key={p.id}>{fn(p)}</td>)}</tr>)}</tbody></table><button className="text-btn" onClick={()=>setCompare([])}>Clear comparison ×</button></div>)}
         <p className="notice">MVP preview: product details, prices and ratings shown here are illustrative sample data, not live retailer offers. Verify details with sellers before purchasing.</p>
       </section>
 
