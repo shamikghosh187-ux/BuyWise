@@ -1,10 +1,13 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { getMarketSummary, getObservedPricePosition } from "@/lib/products/analytics.js";
+import { getMarketSummary } from "@/lib/products/analytics.js";
 import { sortOffers } from "@/lib/products/sort.js";
 import { readWatchlist, writeWatchlist } from "@/lib/products/storage.js";
 import { validateProductQuery } from "@/lib/search/query.js";
+import { formatInr, formatRetrievedAt } from "@/lib/products/format.js";
+import { MarketSummary } from "@/components/products/MarketSummary";
+import { PricePosition } from "@/components/products/PricePosition";
 
 type Product = {
   id: string; title: string; seller: string; price: string; priceValue: number | null;
@@ -14,7 +17,7 @@ type Product = {
 type SearchResponse = { products: Product[]; resultCount: number; updatedAt: string; source: string; error?: string; code?: string };
 
 const categories = ["Phones", "Laptops", "Headphones", "Watches", "Cameras", "Home appliances"];
-const money = (value: number) => "₹" + value.toLocaleString("en-IN");
+const money = formatInr;
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -110,12 +113,7 @@ export default function Home() {
           <div className="toolbar"><span className="result-count">{loading ? "Searching shopping listings…" : view === "watchlist" ? `${visible.length} saved products` : searched ? `${visible.length} listings found` : "Live shopping results will appear here"}</span>
             <select className="sort-select" value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort products"><option value="relevance">Relevance</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="rating">Top rated</option></select>
           </div>
-          {view === "discover" && marketSummary.sampleSize > 0 && <div className="market-summary">
-            <div><span>LOWEST OBSERVED</span><strong>{money(marketSummary.lowest ?? 0)}</strong></div>
-            <div><span>SEARCH MEDIAN</span><strong>{money(marketSummary.median ?? 0)}</strong></div>
-            <div><span>HIGHEST OBSERVED</span><strong>{money(marketSummary.highest ?? 0)}</strong></div>
-            <p>Snapshot from {marketSummary.sampleSize} listings with numeric prices in this search. Not historical price data.</p>
-          </div>}
+          {view === "discover" && <MarketSummary summary={marketSummary} />}
 
           {error && <div className="error-panel"><strong>Shopping search isn't ready</strong><p>{error}</p>{error.includes("SERPAPI_KEY") && <span>Add the key in Vercel → Project → Settings → Environment Variables, then redeploy.</span>}</div>}
           {loading && <div className="loading-panel"><span className="loader"/>Fetching current shopping listings…</div>}
@@ -128,7 +126,7 @@ export default function Home() {
               <div className="product-info">
                 <div className="product-category">{p.seller}</div><h3 className="product-name">{p.title}</h3>
                 <div className="live-price">{p.price}</div>
-                {p.priceValue !== null && <div className={`market-position ${getObservedPricePosition(p.priceValue, marketSummary)}`}>{getObservedPricePosition(p.priceValue, marketSummary).replaceAll("-", " ")}</div>}
+                <PricePosition priceValue={p.priceValue} marketSummary={marketSummary} />
                 {p.oldPrice && <div className="old-price-line">Previously listed: {p.oldPrice}</div>}
                 <div className="live-meta">{p.rating !== null ? <span>★ {p.rating}{p.reviews !== null ? ` · ${p.reviews.toLocaleString("en-IN")} reviews` : ""}</span> : <span>Rating not supplied</span>}{p.condition && <span>{p.condition}</span>}</div>
                 {p.delivery && <p className="delivery-copy">{p.delivery}</p>}
@@ -137,7 +135,7 @@ export default function Home() {
             </article>)}
             {visible.length === 0 && <div className="empty-state">{view === "watchlist" ? "Your watchlist is empty. Save products from a search." : searched ? "No listings came back for this search. Try another product name." : "Search for a product to see real shopping listings here."}</div>}
           </div>}
-          {updatedAt && <p className="source-note">Results retrieved {new Date(updatedAt).toLocaleString("en-IN")} · Source: Google Shopping via SerpApi. Prices and availability can change; confirm on the retailer's page.</p>}
+          {updatedAt && <p className="source-note">Results retrieved {formatRetrievedAt(updatedAt)} · Source: Google Shopping via SerpApi. Prices and availability can change; confirm on the retailer's page.</p>}
         </>}
         {view === "compare" && (selected.length === 0 ? <div className="empty-state">Your comparison is empty. Search for a product and add up to three offers.</div> :
           <div className="compare-table-wrap"><table className="compare-table"><thead><tr><th>Offer detail</th>{selected.map(p => <th key={p.id}>{p.title}</th>)}</tr></thead><tbody>
