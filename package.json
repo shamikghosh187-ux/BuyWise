@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "node --test tests/*.test.js",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "next": "15.5.28",
@@ -21,5 +23,6 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3"
-  }
+  },
+  "type": "module"
 }
