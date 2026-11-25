@@ -1,0 +1,19 @@
+/** @typedef {{priceValue?: number|null, rating?: number|null, reviews?: number|null}} Offer */
+
+/** @param {Offer[]} offers @param {string} mode */
+export function sortOffers(offers = [], mode = "relevance") {
+  const copy = [...offers];
+  if (mode === "price-low") {
+    return copy.sort((a, b) => (a.priceValue ?? Infinity) - (b.priceValue ?? Infinity));
+  }
+  if (mode === "price-high") {
+    return copy.sort((a, b) => (b.priceValue ?? -Infinity) - (a.priceValue ?? -Infinity));
+  }
+  if (mode === "rating") {
+    return copy.sort((a, b) => (b.rating ?? -1) - (a.rating ?? -1));
+  }
+  if (mode === "reviews") {
+    return copy.sort((a, b) => (b.reviews ?? -1) - (a.reviews ?? -1));
+  }
+  return copy;
+}
