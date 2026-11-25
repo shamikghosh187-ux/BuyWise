@@ -1,6 +1,10 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { getMarketSummary, getObservedPricePosition } from "@/lib/products/analytics.js";
+import { sortOffers } from "@/lib/products/sort.js";
+import { readWatchlist, writeWatchlist } from "@/lib/products/storage.js";
+import { validateProductQuery } from "@/lib/search/query.js";
 
 type Product = {
   id: string; title: string; seller: string; price: string; priceValue: number | null;
@@ -27,14 +31,15 @@ export default function Home() {
   const [updatedAt, setUpdatedAt] = useState("");
 
   useEffect(() => {
-    try { setSaved(JSON.parse(localStorage.getItem("buywise-watchlist") || "[]")); } catch { setSaved([]); }
+    setSaved(readWatchlist());
     setReady(true);
   }, []);
-  useEffect(() => { if (ready) localStorage.setItem("buywise-watchlist", JSON.stringify(saved)); }, [saved, ready]);
+  useEffect(() => { if (ready) writeWatchlist(saved); }, [saved, ready]);
 
   async function searchProducts(searchTerm = query) {
-    const term = searchTerm.trim();
-    if (term.length < 2) { setError("Type at least two characters to search."); return; }
+    const validation = validateProductQuery(searchTerm);
+    if (!validation.valid) { setError(validation.message || "Check your search and try again."); return; }
+    const term = validation.query;
     setQuery(term); setView("discover"); setLoading(true); setError(""); setSearched(true);
     try {
       const response = await fetch(`/api/products/search?q=${encodeURIComponent(term)}`);
@@ -56,11 +61,9 @@ export default function Home() {
 
   const visible = useMemo(() => {
     const list = view === "watchlist" ? products.filter(p => saved.includes(p.id)) : products;
-    if (sort === "price-low") return [...list].sort((a,b) => (a.priceValue ?? Number.MAX_SAFE_INTEGER) - (b.priceValue ?? Number.MAX_SAFE_INTEGER));
-    if (sort === "price-high") return [...list].sort((a,b) => (b.priceValue ?? -1) - (a.priceValue ?? -1));
-    if (sort === "rating") return [...list].sort((a,b) => (b.rating ?? -1) - (a.rating ?? -1));
-    return list;
+    return sortOffers(list, sort);
   }, [products, saved, sort, view]);
+  const marketSummary = useMemo(() => getMarketSummary(products), [products]);
 
   const toggleSaved = (id: string) => setSaved(current => current.includes(id) ? current.filter(x => x !== id) : [...current, id]);
   const toggleCompare = (id: string) => setCompare(current => current.includes(id) ? current.filter(x => x !== id) : current.length < 3 ? [...current, id] : current);
@@ -107,6 +110,13 @@ export default function Home() {
           <div className="toolbar"><span className="result-count">{loading ? "Searching shopping listings…" : view === "watchlist" ? `${visible.length} saved products` : searched ? `${visible.length} listings found` : "Live shopping results will appear here"}</span>
             <select className="sort-select" value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort products"><option value="relevance">Relevance</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="rating">Top rated</option></select>
           </div>
+          {view === "discover" && marketSummary.sampleSize > 0 && <div className="market-summary">
+            <div><span>LOWEST OBSERVED</span><strong>{money(marketSummary.lowest)}</strong></div>
+            <div><span>SEARCH MEDIAN</span><strong>{money(marketSummary.median)}</strong></div>
+            <div><span>HIGHEST OBSERVED</span><strong>{money(marketSummary.highest)}</strong></div>
+            <p>Snapshot from {marketSummary.sampleSize} listings with numeric prices in this search. Not historical price data.</p>
+          </div>}
+
           {error && <div className="error-panel"><strong>Shopping search isn't ready</strong><p>{error}</p>{error.includes("SERPAPI_KEY") && <span>Add the key in Vercel → Project → Settings → Environment Variables, then redeploy.</span>}</div>}
           {loading && <div className="loading-panel"><span className="loader"/>Fetching current shopping listings…</div>}
           {!loading && !error && <div className="product-grid">
@@ -118,6 +128,7 @@ export default function Home() {
               <div className="product-info">
                 <div className="product-category">{p.seller}</div><h3 className="product-name">{p.title}</h3>
                 <div className="live-price">{p.price}</div>
+                {p.priceValue !== null && <div className={`market-position ${getObservedPricePosition(p.priceValue, marketSummary)}`}>{getObservedPricePosition(p.priceValue, marketSummary).replaceAll("-", " ")}</div>}
                 {p.oldPrice && <div className="old-price-line">Previously listed: {p.oldPrice}</div>}
                 <div className="live-meta">{p.rating !== null ? <span>★ {p.rating}{p.reviews !== null ? ` · ${p.reviews.toLocaleString("en-IN")} reviews` : ""}</span> : <span>Rating not supplied</span>}{p.condition && <span>{p.condition}</span>}</div>
                 {p.delivery && <p className="delivery-copy">{p.delivery}</p>}
