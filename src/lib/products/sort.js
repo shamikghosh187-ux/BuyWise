@@ -1,6 +1,12 @@
-/** @typedef {{priceValue?: number|null, rating?: number|null, reviews?: number|null}} Offer */
+/** @typedef {{id: string, priceValue?: number|null, rating?: number|null, reviews?: number|null}} Offer */
 
-/** @param {Offer[]} offers @param {string} mode */
+/**
+ * Sort offers without narrowing away the caller's product fields.
+ * @template {Offer} T
+ * @param {T[]} offers
+ * @param {string} mode
+ * @returns {T[]}
+ */
 export function sortOffers(offers = [], mode = "relevance") {
   const copy = [...offers];
   if (mode === "price-low") {
