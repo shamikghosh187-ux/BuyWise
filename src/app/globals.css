@@ -122,3 +122,30 @@ button{cursor:pointer}
 .spec-row strong{text-align:right}
 .modal-disclaimer{border-top:1px solid var(--line);padding-top:12px;font-size:10px!important}
 @media(max-width:560px){.modal-metrics{grid-template-columns:1fr 1fr}.compare-bar{gap:8px;padding:10px 12px;font-size:10px}.compare-bar button{padding:8px 9px}}
+
+
+/* Live shopping results */
+.selected-link{color:var(--orange)!important}
+.search-hint{font-size:10px;color:var(--muted);margin:9px 0 0 8px}
+.search-wrap button:disabled{opacity:.65;cursor:wait}
+.product-visual{background:#f0f0eb}
+.product-image{width:100%;height:100%;object-fit:contain;padding:18px;position:relative;z-index:1}
+.no-image{font-size:10px;color:#969a91}
+.live-price{font:800 21px Manrope,sans-serif;letter-spacing:-.6px;margin:14px 0 2px}
+.old-price-line{font-size:10px;color:#92978d}
+.live-meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:#686e63;font-size:10px;margin-top:10px}
+.delivery-copy{font-size:10px;color:#777e72;line-height:1.5;margin:8px 0}
+.live-card-actions{display:flex;gap:8px;align-items:center;margin-top:13px}
+.live-card-actions .compare-full{margin:0;flex:1}
+.retailer-link{display:inline-flex;align-items:center;justify-content:center;background:var(--orange);color:#fff;text-decoration:none;border-radius:8px;padding:10px 11px;font-size:10px;font-weight:800;white-space:nowrap}
+.no-link{font-size:9px;color:#969a91}
+.error-panel{background:#fff5ef;border:1px solid #f4cbb8;border-radius:12px;padding:16px 18px;margin:12px 0;color:#8f3f1e}
+.error-panel strong{font:800 13px Manrope,sans-serif}
+.error-panel p{font-size:12px;line-height:1.6;margin:6px 0}
+.error-panel span{font-size:10px;color:#9b674d}
+.loading-panel{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:22px;color:var(--muted);font-size:12px}
+.loader{width:17px;height:17px;border:2px solid #f3d7c8;border-top-color:var(--orange);border-radius:50%;animation:bwspin .8s linear infinite}
+@keyframes bwspin{to{transform:rotate(360deg)}}
+.source-note{font-size:10px;color:#858b80;margin:14px 0}
+.compare-table a{color:var(--orange);font-weight:700;text-decoration:none}
+@media(max-width:700px){.live-card-actions{flex-direction:column;align-items:stretch}.live-card-actions .compare-full,.live-card-actions .retailer-link{width:100%}.product-image{padding:12px}.hero{grid-template-columns:1fr}.hero-art{min-height:190px}.top-actions{gap:2px}.top-link{padding:8px 6px;font-size:10px}}
