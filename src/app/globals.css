@@ -149,3 +149,17 @@ button{cursor:pointer}
 .source-note{font-size:10px;color:#858b80;margin:14px 0}
 .compare-table a{color:var(--orange);font-weight:700;text-decoration:none}
 @media(max-width:700px){.live-card-actions{flex-direction:column;align-items:stretch}.live-card-actions .compare-full,.live-card-actions .retailer-link{width:100%}.product-image{padding:12px}.hero{grid-template-columns:1fr}.hero-art{min-height:190px}.top-actions{gap:2px}.top-link{padding:8px 6px;font-size:10px}}
+
+
+/* Observed-market snapshot and transparent price-position labels */
+.market-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:14px;margin:0 0 16px}
+.market-summary div{display:flex;flex-direction:column;gap:4px}
+.market-summary span{font-size:9px;font-weight:800;letter-spacing:.8px;color:var(--muted)}
+.market-summary strong{font:800 17px Manrope,sans-serif}
+.market-summary p{grid-column:1/-1;margin:2px 0 0;color:var(--muted);font-size:10px}
+.market-position{display:inline-block;margin-top:6px;padding:4px 7px;border-radius:6px;font-size:9px;font-weight:700;text-transform:capitalize;width:max-content}
+.market-position.below-observed-median{background:#eaf4eb;color:#286844}
+.market-position.near-observed-median{background:#f5f1e8;color:#82652a}
+.market-position.above-observed-median{background:#fff0e9;color:#a64c2a}
+.market-position.unknown{background:#f1f1ed;color:#777}
+@media(max-width:560px){.market-summary{gap:7px;padding:11px}.market-summary strong{font-size:14px}.market-summary span{font-size:8px}}
