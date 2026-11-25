@@ -12,16 +12,24 @@ export function getMarketSummary(offers = []) {
   }
 
   const middle = Math.floor(prices.length / 2);
+  const lowerMiddle = prices[middle - 1] ?? null;
+  const upperMiddle = prices[middle] ?? null;
+  const lowest = prices[0] ?? null;
+  const highest = prices[prices.length - 1] ?? null;
+
+  // Guard indexed reads explicitly: TypeScript may treat array entries as undefined.
   const median = prices.length % 2
-    ? prices[middle]
-    : (prices[middle - 1] + prices[middle]) / 2;
+    ? upperMiddle
+    : lowerMiddle !== null && upperMiddle !== null
+      ? (lowerMiddle + upperMiddle) / 2
+      : lowerMiddle ?? upperMiddle;
 
   return {
     sampleSize: prices.length,
-    lowest: prices[0] ?? null,
+    lowest,
     median,
-    highest: prices[prices.length - 1] ?? null,
-    spread: prices[prices.length - 1] - prices[0],
+    highest,
+    spread: lowest !== null && highest !== null ? highest - lowest : null,
     average: prices.reduce((sum, value) => sum + value, 0) / prices.length,
   };
 }
