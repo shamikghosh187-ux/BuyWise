@@ -28,6 +28,7 @@ export default function Home() {
   const [compare, setCompare] = useState<string[]>([]);
   const [view, setView] = useState<"discover" | "watchlist" | "compare">("discover");
   const [sort, setSort] = useState("relevance");
+  const [filter, setFilter] = useState<"all" | "rated" | "delivery">("all");
   const [detail, setDetail] = useState<Product | null>(null);
   const [ready, setReady] = useState(false);
   const [updatedAt, setUpdatedAt] = useState("");
@@ -50,6 +51,7 @@ export default function Home() {
       setProducts(data.products || []);
       setUpdatedAt(data.updatedAt || "");
       setSort("relevance");
+      setFilter("all");
     } catch (err) {
       setProducts([]);
       setError(err instanceof Error ? err.message : "Couldn't load shopping results.");
@@ -63,8 +65,9 @@ export default function Home() {
 
   const visible = useMemo(() => {
     const list = view === "watchlist" ? products.filter(p => saved.includes(p.id)) : products;
-    return sortOffers(list, sort);
-  }, [products, saved, sort, view]);
+    const filtered = list.filter(p => filter === "rated" ? p.rating !== null && p.rating >= 4 : filter === "delivery" ? Boolean(p.delivery) : true);
+    return sortOffers(filtered, sort);
+  }, [products, saved, sort, view, filter]);
   const marketSummary = useMemo(() => getMarketSummary(products), [products]);
 
   const toggleSaved = (id: string) => setSaved(current => current.includes(id) ? current.filter(x => x !== id) : [...current, id]);
@@ -109,6 +112,11 @@ export default function Home() {
         </div>
         {view === "discover" && <div className="category-row">{categories.map(c => <button key={c} className="category" onClick={() => void searchProducts(c)}>{c}</button>)}</div>}
         {view !== "compare" && <>
+          <div className="category-row filter-row" aria-label="Filter search results">
+            <button className={"category " + (filter === "all" ? "active" : "")} onClick={() => setFilter("all")}>All offers</button>
+            <button className={"category " + (filter === "rated" ? "active" : "")} onClick={() => setFilter("rated")}>★ Rated 4+</button>
+            <button className={"category " + (filter === "delivery" ? "active" : "")} onClick={() => setFilter("delivery")}>Delivery info</button>
+          </div>
           <div className="toolbar"><span className="result-count">{loading ? "Searching shopping listings…" : view === "watchlist" ? `${visible.length} saved products` : searched ? `${visible.length} listings found` : "Live shopping results will appear here"}</span>
             <select className="sort-select" value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort products"><option value="relevance">Relevance</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="rating">Top rated</option></select>
           </div>
