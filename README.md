@@ -52,3 +52,17 @@ BuyWise currently redirects shoppers to retailer pages. It does not take payment
 - React 19
 - TypeScript
 - SerpApi Google Shopping Results API
+
+
+## Expanded project modules
+
+- `src/lib/products/analytics.js`: observed market summary and explainable price-position labels.
+- `src/lib/products/sort.js`: reusable offer sorting.
+- `src/lib/products/storage.js`: defensive watchlist persistence.
+- `src/lib/search/query.js`: shared search-input validation.
+- `src/lib/security/safe-url.js`: HTTP(S)-only URL validation.
+- `src/app/api/health/route.ts`: deployment and shopping-provider readiness check.
+- `tests/products.test.js`: offline unit tests using Node's built-in test runner.
+- `docs/`: architecture, data-trust and development notes.
+
+Run `npm test` for the offline utility tests and `npm run typecheck` for TypeScript checking.
