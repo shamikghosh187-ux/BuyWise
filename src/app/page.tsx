@@ -1,107 +1,145 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 
 type Product = {
-  id: number; brand: string; name: string; category: string; description: string;
-  price: number; rating: number; reviews: number; score: number; tag: string;
-  emoji: string; specs: Record<string,string>;
+  id: string; title: string; seller: string; price: string; priceValue: number | null;
+  oldPrice: string | null; rating: number | null; reviews: number | null;
+  image: string | null; url: string | null; delivery: string | null; condition: string | null;
 };
+type SearchResponse = { products: Product[]; resultCount: number; updatedAt: string; source: string; error?: string; code?: string };
 
-const products: Product[] = [
-  {id:1,brand:"Sony",name:"WH-1000XM5",category:"Audio",description:"Comfortable wireless headphones with adaptive noise cancellation.",price:24990,rating:4.6,reviews:1940,score:94,tag:"TOP RATED",emoji:"🎧",specs:{"Type":"Over-ear wireless","Battery":"Up to 30 hours","Noise control":"Active noise cancelling","Charging":"USB-C"}},
-  {id:2,brand:"Logitech",name:"MX Master 3S",category:"Accessories",description:"An ergonomic productivity mouse with quiet clicks and customisable controls.",price:8995,rating:4.6,reviews:743,score:92,tag:"EDITOR PICK",emoji:"🖱️",specs:{"Type":"Wireless mouse","DPI":"Up to 8,000","Battery":"Up to 70 days","Connectivity":"Bluetooth / USB"}},
-  {id:3,brand:"Samsung",name:"Galaxy S24 FE",category:"Phones",description:"A balanced everyday phone with a vivid display and versatile cameras.",price:44999,rating:4.5,reviews:1284,score:91,tag:"SMART PICK",emoji:"📱",specs:{"Display":"6.7-inch AMOLED","Processor":"Exynos 2400e","Camera":"50 MP main","Storage":"128 GB"}},
-  {id:4,brand:"Nothing",name:"Ear (a)",category:"Audio",description:"Distinctive wireless earbuds with active noise cancellation and a compact case.",price:7999,rating:4.4,reviews:532,score:90,tag:"WORTH A LOOK",emoji:"🎵",specs:{"Type":"True wireless","Battery":"Up to 42.5 hours","Noise control":"Active noise cancelling","Charging":"USB-C"}},
-  {id:5,brand:"Apple",name:"iPhone 15",category:"Phones",description:"A polished phone experience with strong performance and long software support.",price:59900,rating:4.7,reviews:2301,score:89,tag:"POPULAR",emoji:"📱",specs:{"Display":"6.1-inch OLED","Processor":"A16 Bionic","Camera":"48 MP main","Storage":"128 GB"}},
-  {id:6,brand:"ASUS",name:"Vivobook 15",category:"Laptops",description:"A practical laptop for study, productivity and everyday multitasking.",price:52990,rating:4.3,reviews:876,score:87,tag:"EVERYDAY VALUE",emoji:"💻",specs:{"Display":"15.6-inch FHD","Processor":"Intel Core i5","Memory":"16 GB RAM","Storage":"512 GB SSD"}}
-];
-const categories=["All products","Phones","Laptops","Audio","Accessories"];
-const money=(n:number)=>"₹"+n.toLocaleString("en-IN");
+const categories = ["Phones", "Laptops", "Headphones", "Watches", "Cameras", "Home appliances"];
+const money = (value: number) => "₹" + value.toLocaleString("en-IN");
 
-export default function Home(){
-  const [query,setQuery]=useState("");
-  const [category,setCategory]=useState("All products");
-  const [sort,setSort]=useState("recommended");
-  const [saved,setSaved]=useState<number[]>([]);
-  const [compare,setCompare]=useState<number[]>([]);
-  const [view,setView]=useState<"discover"|"watchlist"|"compare">("discover");
-  const [detail,setDetail]=useState<Product|null>(null);
-  const [ready,setReady]=useState(false);
+export default function Home() {
+  const [query, setQuery] = useState("");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [searched, setSearched] = useState(false);
+  const [saved, setSaved] = useState<string[]>([]);
+  const [compare, setCompare] = useState<string[]>([]);
+  const [view, setView] = useState<"discover" | "watchlist" | "compare">("discover");
+  const [sort, setSort] = useState("relevance");
+  const [detail, setDetail] = useState<Product | null>(null);
+  const [ready, setReady] = useState(false);
+  const [updatedAt, setUpdatedAt] = useState("");
 
-  useEffect(()=>{try{setSaved(JSON.parse(localStorage.getItem("buywise-watchlist")||"[]"));}catch{setSaved([]);}setReady(true);},[]);
-  useEffect(()=>{if(ready)localStorage.setItem("buywise-watchlist",JSON.stringify(saved));},[saved,ready]);
+  useEffect(() => {
+    try { setSaved(JSON.parse(localStorage.getItem("buywise-watchlist") || "[]")); } catch { setSaved([]); }
+    setReady(true);
+  }, []);
+  useEffect(() => { if (ready) localStorage.setItem("buywise-watchlist", JSON.stringify(saved)); }, [saved, ready]);
 
-  const visible=useMemo(()=>{
-    let list=products.filter(p=>(category==="All products"||p.category===category)&&[p.name,p.brand,p.category,p.description].join(" ").toLowerCase().includes(query.toLowerCase())&&(view!=="watchlist"||saved.includes(p.id)));
-    if(sort==="price-low")list=[...list].sort((a,b)=>a.price-b.price);
-    if(sort==="price-high")list=[...list].sort((a,b)=>b.price-a.price);
-    if(sort==="rating")list=[...list].sort((a,b)=>b.rating-a.rating);
-    if(sort==="recommended")list=[...list].sort((a,b)=>b.score-a.score);
+  async function searchProducts(searchTerm = query) {
+    const term = searchTerm.trim();
+    if (term.length < 2) { setError("Type at least two characters to search."); return; }
+    setQuery(term); setView("discover"); setLoading(true); setError(""); setSearched(true);
+    try {
+      const response = await fetch(`/api/products/search?q=${encodeURIComponent(term)}`);
+      const data = await response.json() as SearchResponse;
+      if (!response.ok) throw new Error(data.error || "Search failed.");
+      setProducts(data.products || []);
+      setUpdatedAt(data.updatedAt || "");
+      setSort("relevance");
+    } catch (err) {
+      setProducts([]);
+      setError(err instanceof Error ? err.message : "Couldn't load shopping results.");
+    } finally { setLoading(false); }
+  }
+
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void searchProducts();
+  }
+
+  const visible = useMemo(() => {
+    const list = view === "watchlist" ? products.filter(p => saved.includes(p.id)) : products;
+    if (sort === "price-low") return [...list].sort((a,b) => (a.priceValue ?? Number.MAX_SAFE_INTEGER) - (b.priceValue ?? Number.MAX_SAFE_INTEGER));
+    if (sort === "price-high") return [...list].sort((a,b) => (b.priceValue ?? -1) - (a.priceValue ?? -1));
+    if (sort === "rating") return [...list].sort((a,b) => (b.rating ?? -1) - (a.rating ?? -1));
     return list;
-  },[category,query,sort,view,saved]);
+  }, [products, saved, sort, view]);
 
-  const toggleSaved=(id:number)=>setSaved(current=>current.includes(id)?current.filter(x=>x!==id):[...current,id]);
-  const toggleCompare=(id:number)=>setCompare(current=>current.includes(id)?current.filter(x=>x!==id):current.length<3?[...current,id]:current);
-  const selected=products.filter(p=>compare.includes(p.id));
-  const comparisonRows: [string,(p:Product)=>string][] = [["Brand",p=>p.brand],["Category",p=>p.category],["Indicative price",p=>money(p.price)],["Sample rating",p=>"★ "+p.rating+"/5"],["Value indicator",p=>p.score+"/100"],...Object.keys(selected[0]?.specs||{}).map(k=>[k,(p:Product)=>p.specs[k]||"—"] as [string,(p:Product)=>string])];
+  const toggleSaved = (id: string) => setSaved(current => current.includes(id) ? current.filter(x => x !== id) : [...current, id]);
+  const toggleCompare = (id: string) => setCompare(current => current.includes(id) ? current.filter(x => x !== id) : current.length < 3 ? [...current, id] : current);
+  const selected = products.filter(p => compare.includes(p.id));
 
   return <main className="app-shell">
     <header className="topbar">
       <a className="brand" href="#"><span className="brand-mark">b</span><span>buy<span>wise</span></span></a>
       <nav className="top-actions">
-        <button className="top-link" onClick={()=>setView("discover")}>Discover</button>
-        <button className="top-link" onClick={()=>setView("compare")}>Compare ({compare.length})</button>
-        <button className="top-link" onClick={()=>setView("watchlist")}>Watchlist ({saved.length})</button>
+        <button className={`top-link ${view === "discover" ? "selected-link" : ""}`} onClick={() => setView("discover")}>Discover</button>
+        <button className={`top-link ${view === "compare" ? "selected-link" : ""}`} onClick={() => setView("compare")}>Compare ({compare.length})</button>
+        <button className={`top-link ${view === "watchlist" ? "selected-link" : ""}`} onClick={() => setView("watchlist")}>Watchlist ({saved.length})</button>
         <span className="avatar">BW</span>
       </nav>
     </header>
     <div className="page">
       <section className="hero">
         <div>
-          <div className="eyebrow">Shopping intelligence, made simple</div>
-          <h1>Buy better.<br/><em>Know why.</em></h1>
-          <p className="hero-copy">Explore products, compare what matters, and understand the value behind every choice — all in one place.</p>
-          <form className="search-wrap" onSubmit={e=>{e.preventDefault();setView("discover");}}>
+          <div className="eyebrow">REAL SHOPPING SEARCH · INDIA</div>
+          <h1>Find the right buy.<br/><em>At the right price.</em></h1>
+          <p className="hero-copy">Search products across shopping listings, compare seller offers, and open the retailer's page when you're ready to learn more.</p>
+          <form className="search-wrap" onSubmit={submitSearch}>
             <span className="search-icon">⌕</span>
-            <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search products, brands or categories..." aria-label="Search products"/>
-            <button type="submit">Search ↗</button>
+            <input value={query} onChange={e => setQuery(e.target.value)} placeholder="What are you looking for?" aria-label="Search products"/>
+            <button type="submit" disabled={loading}>{loading ? "Searching…" : "Search ↗"}</button>
           </form>
+          <div className="search-hint">Try a product name or choose a category below.</div>
         </div>
-        <div className="hero-art"><div className="art-top"><span className="art-label">The smarter side of shopping</span><span>✳</span></div><div className="art-title">Less guessing.<br/>More knowing.</div><div className="art-bottom"><span>Discover · Compare · Decide</span><span className="art-chip">Your buying companion ↗</span></div></div>
+        <div className="hero-art"><div className="art-top"><span className="art-label">BuyWise shopping intelligence</span><span>✳</span></div><div className="art-title">Real listings.<br/>Clearer choices.</div><div className="art-bottom"><span>Discover · Compare · Decide</span><span className="art-chip">India catalogue</span></div></div>
       </section>
 
       <section className="stats">
-        <div className="stat"><strong>01 / Discover</strong><span>Find products by what matters to you</span></div>
-        <div className="stat"><strong>02 / Compare</strong><span>Put your shortlist side by side</span></div>
-        <div className="stat"><strong>03 / Decide</strong><span>Choose with more context</span></div>
+        <div className="stat"><strong>Live search</strong><span>Listings from a connected shopping data source</span></div>
+        <div className="stat"><strong>Seller offers</strong><span>See the store and its listed price</span></div>
+        <div className="stat"><strong>Your shortlist</strong><span>Save and compare up to three results</span></div>
       </section>
 
-      <section id="discover">
-        <div className="section-head"><div><h2>{view==="watchlist"?"Your watchlist":view==="compare"?"Compare products":"Explore products"}</h2><p>{view==="watchlist"?"Products you saved for later.":view==="compare"?"A side-by-side look at your shortlist.":"A considered starting point for your next purchase."}</p></div>
-          {view!=="discover"&&<button className="text-btn" onClick={()=>setView("discover")}>← Back to discovery</button>}
+      <section>
+        <div className="section-head"><div><h2>{view === "watchlist" ? "Your watchlist" : view === "compare" ? "Compare offers" : "Search products"}</h2><p>{view === "watchlist" ? "Saved products from your searches." : view === "compare" ? "Review your selected results side by side." : "Choose a category or search for a specific product."}</p></div>
+          {view !== "discover" && <button className="text-btn" onClick={() => setView("discover")}>← Back to results</button>}
         </div>
-        {view!=="compare"&&<>
-          <div className="category-row">{categories.map(c=><button key={c} className={`category ${category===c?"active":""}`} onClick={()=>setCategory(c)}>{c}</button>)}</div>
-          <div className="toolbar"><span className="result-count">{visible.length} products to explore</span><select className="sort-select" value={sort} onChange={e=>setSort(e.target.value)} aria-label="Sort products"><option value="recommended">Recommended</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="rating">Top rated</option></select></div>
-          <div className="product-grid">{visible.map(p=><article className="product-card" key={p.id}>
-            <div className="product-visual"><span className="product-tag">{p.tag}</span><button className={`save-btn ${saved.includes(p.id)?"saved":""}`} onClick={()=>toggleSaved(p.id)} aria-label="Toggle watchlist">{saved.includes(p.id)?"♥":"♡"}</button><span className="product-emoji">{p.emoji}</span></div>
-            <div className="product-info"><div className="product-category">{p.brand} · {p.category}</div><h3 className="product-name">{p.name}</h3><p className="product-desc">{p.description}</p>
-              <div className="price-line"><span className="price">{money(p.price)}</span><span className="value-score">✳ {p.score}/100</span></div>
-              <div className="card-foot"><span className="rating">★ {p.rating} <small>({p.reviews.toLocaleString("en-IN")} sample ratings)</small></span><button className="details-link" onClick={()=>setDetail(p)}>Details ↗</button></div>
-              <button className={`compare-full ${compare.includes(p.id)?"chosen":""}`} onClick={()=>toggleCompare(p.id)}>{compare.includes(p.id)?"✓ Added to compare":"⇄ Add to compare"}</button>
-            </div>
-          </article>)}</div>
-          {visible.length===0&&<div className="empty-state">{view==="watchlist"?"Your watchlist is empty. Save a product using the heart icon.":"No matching products. Try a different search or category."}</div>}
+        {view === "discover" && <div className="category-row">{categories.map(c => <button key={c} className="category" onClick={() => void searchProducts(c)}>{c}</button>)}</div>}
+        {view !== "compare" && <>
+          <div className="toolbar"><span className="result-count">{loading ? "Searching shopping listings…" : view === "watchlist" ? `${visible.length} saved products` : searched ? `${visible.length} listings found` : "Live shopping results will appear here"}</span>
+            <select className="sort-select" value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort products"><option value="relevance">Relevance</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="rating">Top rated</option></select>
+          </div>
+          {error && <div className="error-panel"><strong>Shopping search isn't ready</strong><p>{error}</p>{error.includes("SERPAPI_KEY") && <span>Add the key in Vercel → Project → Settings → Environment Variables, then redeploy.</span>}</div>}
+          {loading && <div className="loading-panel"><span className="loader"/>Fetching current shopping listings…</div>}
+          {!loading && !error && <div className="product-grid">
+            {visible.map(p => <article className="product-card" key={p.id}>
+              <div className="product-visual">
+                {p.image ? <img src={p.image} alt={p.title} className="product-image"/> : <span className="no-image">Product image unavailable</span>}
+                <button className={`save-btn ${saved.includes(p.id) ? "saved" : ""}`} onClick={() => toggleSaved(p.id)} aria-label="Toggle watchlist">{saved.includes(p.id) ? "♥" : "♡"}</button>
+              </div>
+              <div className="product-info">
+                <div className="product-category">{p.seller}</div><h3 className="product-name">{p.title}</h3>
+                <div className="live-price">{p.price}</div>
+                {p.oldPrice && <div className="old-price-line">Previously listed: {p.oldPrice}</div>}
+                <div className="live-meta">{p.rating !== null ? <span>★ {p.rating}{p.reviews !== null ? ` · ${p.reviews.toLocaleString("en-IN")} reviews` : ""}</span> : <span>Rating not supplied</span>}{p.condition && <span>{p.condition}</span>}</div>
+                {p.delivery && <p className="delivery-copy">{p.delivery}</p>}
+                <div className="live-card-actions"><button className={`compare-full ${compare.includes(p.id) ? "chosen" : ""}`} onClick={() => toggleCompare(p.id)}>{compare.includes(p.id) ? "✓ Added to compare" : "⇄ Compare"}</button>{p.url ? <a className="retailer-link" href={p.url} target="_blank" rel="noopener noreferrer">View retailer ↗</a> : <span className="no-link">Retailer link unavailable</span>}</div>
+              </div>
+            </article>)}
+            {visible.length === 0 && <div className="empty-state">{view === "watchlist" ? "Your watchlist is empty. Save products from a search." : searched ? "No listings came back for this search. Try another product name." : "Search for a product to see real shopping listings here."}</div>}
+          </div>}
+          {updatedAt && <p className="source-note">Results retrieved {new Date(updatedAt).toLocaleString("en-IN")} · Source: Google Shopping via SerpApi. Prices and availability can change; confirm on the retailer's page.</p>}
         </>}
-        {view==="compare"&&(selected.length===0?<div className="empty-state">Your comparison is empty. Add up to three products from Discover.</div>:<div className="compare-table-wrap"><table className="compare-table"><thead><tr><th>What matters</th>{selected.map(p=><th key={p.id}>{p.emoji} {p.name}</th>)}</tr></thead><tbody>{comparisonRows.map(([label,fn])=><tr key={label}><td>{label}</td>{selected.map(p=><td key={p.id}>{fn(p)}</td>)}</tr>)}</tbody></table><button className="text-btn" onClick={()=>setCompare([])}>Clear comparison ×</button></div>)}
-        <p className="notice">MVP preview: product details, prices and ratings shown here are illustrative sample data, not live retailer offers. Verify details with sellers before purchasing.</p>
+        {view === "compare" && (selected.length === 0 ? <div className="empty-state">Your comparison is empty. Search for a product and add up to three offers.</div> :
+          <div className="compare-table-wrap"><table className="compare-table"><thead><tr><th>Offer detail</th>{selected.map(p => <th key={p.id}>{p.title}</th>)}</tr></thead><tbody>
+            {([["Seller", (p:Product)=>p.seller],["Listed price",(p:Product)=>p.price],["Rating",(p:Product)=>p.rating === null ? "Not supplied" : `★ ${p.rating}`],["Reviews",(p:Product)=>p.reviews === null ? "Not supplied" : p.reviews.toLocaleString("en-IN")],["Delivery",(p:Product)=>p.delivery || "Not supplied"],["Condition",(p:Product)=>p.condition || "Not supplied"]] as [string,(p:Product)=>string][]).map(([label,fn])=><tr key={label}><td>{label}</td>{selected.map(p=><td key={p.id}>{fn(p)}</td>)}</tr>)}
+            <tr><td>Retailer</td>{selected.map(p=><td key={p.id}>{p.url ? <a href={p.url} target="_blank" rel="noopener noreferrer">Open offer ↗</a> : "Link unavailable"}</td>)}</tr>
+          </tbody></table><button className="text-btn" onClick={() => setCompare([])}>Clear comparison ×</button></div>)}
+        <p className="notice">BuyWise displays third-party shopping listings. Seller, price, stock, delivery and ratings are supplied by the source and may change. Always verify the final details on the retailer's website.</p>
       </section>
 
-      <section className="insight-panel"><div><div className="eyebrow" style={{color:"#ffad79"}}>A more thoughtful way to buy</div><h3>Don't just find a product. Understand the choice.</h3><p>BuyWise is being built around the questions that matter before checkout: Is it good value? What are the trade-offs? Are there better alternatives? Live retailer sources and verified price history are the next integration stage.</p></div><div className="insight-icon">✳</div></section>
-      <footer className="footer"><span>© 2026 BuyWise · Shopping intelligence</span><span>Built to help you choose with confidence.</span></footer>
+      <section className="insight-panel"><div><div className="eyebrow" style={{color:"#ffad79"}}>BUYWISE PRINCIPLE</div><h3>Don't just find a product. Understand the offer.</h3><p>We're building toward clearer seller comparisons, transparent price history and explainable buying recommendations. The current live search is the first data-connected step.</p></div><div className="insight-icon">✳</div></section>
+      <footer className="footer"><span>© 2026 BuyWise · Shopping intelligence</span><span>Choose with confidence.</span></footer>
     </div>
-    {compare.length>0&&<div className="compare-bar"><span>{compare.length} of 3 selected</span><button onClick={()=>setView("compare")}>Review comparison ↗</button><button className="clear-compare" onClick={()=>setCompare([])}>Clear</button></div>}
-    {detail&&<div className="modal-backdrop" onClick={()=>setDetail(null)}><section className="product-modal" role="dialog" aria-modal="true" onClick={e=>e.stopPropagation()}><button className="modal-close" onClick={()=>setDetail(null)} aria-label="Close">×</button><div className="modal-hero">{detail.emoji}</div><div className="product-category">{detail.brand} · {detail.category}</div><h2>{detail.name}</h2><p>{detail.description}</p><div className="modal-metrics"><div><small>INDICATIVE PRICE</small><strong>{money(detail.price)}</strong></div><div><small>SAMPLE RATING</small><strong>★ {detail.rating}</strong></div><div><small>VALUE INDICATOR</small><strong>{detail.score}/100</strong></div></div><h3>Key specifications</h3>{Object.entries(detail.specs).map(([k,v])=><div className="spec-row" key={k}><span>{k}</span><strong>{v}</strong></div>)}<p className="modal-disclaimer">Sample catalogue information only. BuyWise has not verified current retailer pricing, stock or seller details.</p></section></div>}
+    {compare.length > 0 && <div className="compare-bar"><span>{compare.length} of 3 selected</span><button onClick={() => setView("compare")}>Review comparison ↗</button><button className="clear-compare" onClick={() => setCompare([])}>Clear</button></div>}
+    {detail && <div className="modal-backdrop" onClick={() => setDetail(null)}><section className="product-modal" role="dialog" aria-modal="true" onClick={e => e.stopPropagation()}><button className="modal-close" onClick={() => setDetail(null)} aria-label="Close">×</button><h2>{detail.title}</h2><p>{detail.seller}</p><div className="modal-metrics"><div><small>LISTED PRICE</small><strong>{detail.price}</strong></div><div><small>RATING</small><strong>{detail.rating ?? "—"}</strong></div><div><small>REVIEWS</small><strong>{detail.reviews ?? "—"}</strong></div></div>{detail.delivery && <p>{detail.delivery}</p>}{detail.url && <a className="retailer-link" href={detail.url} target="_blank" rel="noopener noreferrer">Open retailer offer ↗</a>}</section></div>}
   </main>;
 }
