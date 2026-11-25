@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10110f" />
+  <meta name="description" content="BuyWise helps you discover, compare and evaluate products before you buy." />
+  <title>BuyWise — Shop with clarity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="BuyWise home"><span class="brand-mark">b<span>.</span></span><span>buywise</span></a>
+      <div class="side-label">WORKSPACE</div>
+      <nav class="nav-list">
+        <button class="nav-item active" data-view="discover"><span class="nav-icon">⌕</span> Discover</button>
+        <button class="nav-item" data-view="compare"><span class="nav-icon">⇄</span> Compare <span class="nav-count" id="compareCount">0</span></button>
+        <button class="nav-item" data-view="watchlist"><span class="nav-icon">♡</span> Watchlist <span class="nav-count" id="watchCount">0</span></button>
+        <button class="nav-item" data-view="insights"><span class="nav-icon">◷</span> Price insights</button>
+      </nav>
+      <div class="side-bottom">
+        <div class="help-card"><span class="help-spark">✳</span><strong>Buy better, not harder.</strong><p>Clear comparisons. Confident decisions.</p></div>
+        <button class="nav-item" data-view="about"><span class="nav-icon">ⓘ</span> About BuyWise</button>
+        <div class="profile"><div class="avatar">B</div><div><strong>Guest workspace</strong><small>Local preview</small></div><span class="profile-dot"></span></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="mobile-menu" id="menuBtn" aria-label="Open menu">☰</button>
+        <div class="breadcrumb">Workspace <span>/</span> <strong id="crumb">Discover</strong></div>
+        <div class="top-actions"><span class="live-dot"></span><span class="top-status">Shopping intelligence</span><button class="icon-button" id="helpBtn" aria-label="About this preview">?</button></div>
+      </header>
+
+      <section class="page-heading" id="discoverHeading">
+        <div><div class="eyebrow"><span class="eyebrow-line"></span> THE SMARTER WAY TO SHOP</div><h1>Find what’s <em>worth it.</em></h1><p class="subtitle">Explore products, compare what matters, and make your next purchase with confidence.</p></div>
+        <div class="heading-note"><span>✳</span><div><strong>Think before you buy.</strong><small>Clarity over endless choices.</small></div></div>
+      </section>
+
+      <section class="search-panel" id="searchPanel">
+        <span class="search-symbol">⌕</span><input id="searchInput" type="search" placeholder="Search products, brands or categories..." autocomplete="off" />
+        <kbd>↵</kbd><button id="searchBtn" class="search-button">Search <span>↗</span></button>
+      </section>
+
+      <section class="category-row" id="categoryRow">
+        <button class="category-chip selected" data-category="All">✳ <span>All products</span></button>
+        <button class="category-chip" data-category="Phones">▣ <span>Phones</span></button>
+        <button class="category-chip" data-category="Laptops">▤ <span>Laptops</span></button>
+        <button class="category-chip" data-category="Audio">♫ <span>Audio</span></button>
+        <button class="category-chip" data-category="Accessories">⌁ <span>Accessories</span></button>
+      </section>
+
+      <section class="content-section" id="productSection">
+        <div class="section-head"><div><div class="eyebrow muted">CURATED FOR YOUR NEXT BUY</div><h2 id="sectionTitle">Explore products <span class="result-count" id="resultCount">06</span></h2></div><div class="sort-wrap"><label for="sortSelect">Sort by</label><select id="sortSelect"><option value="recommended">Recommended</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="rating">Top rated</option></select></div></div>
+        <div class="product-grid" id="productGrid"></div>
+        <div class="empty-state hidden" id="emptyState"><span>⌕</span><h3>No matches found</h3><p>Try another search or choose a different category.</p><button class="outline-button" id="clearFilters">Clear filters</button></div>
+      </section>
+
+      <section class="content-section hidden" id="compareSection">
+        <div class="section-head"><div><div class="eyebrow muted">SIDE-BY-SIDE CLARITY</div><h2>Your comparison</h2></div><button class="text-button" id="clearCompare">Clear all ×</button></div>
+        <div id="compareContent"></div>
+      </section>
+      <section class="content-section hidden" id="watchlistSection">
+        <div class="section-head"><div><div class="eyebrow muted">SAVED FOR LATER</div><h2>Your watchlist</h2></div></div><div class="product-grid" id="watchGrid"></div>
+      </section>
+      <section class="content-section hidden" id="insightsSection">
+        <div class="section-head"><div><div class="eyebrow muted">BUY WITH CONTEXT</div><h2>Price insights</h2></div></div>
+        <div class="insight-grid"><article class="insight-card"><span class="insight-icon">↘</span><small>PRICE CHECK</small><h3>Compare the full picture.</h3><p>A lower price is only a better deal when the product, seller, warranty and delivery terms also make sense.</p></article><article class="insight-card"><span class="insight-icon">◷</span><small>PRICE HISTORY</small><h3>Know when to wait.</h3><p>Price-history tracking will become available when live retailer data is connected.</p></article><article class="insight-card"><span class="insight-icon">✳</span><small>BUYWISE PRINCIPLE</small><h3>Value beats hype.</h3><p>Look beyond discounts. Prioritise the features you will actually use.</p></article></div>
+      </section>
+      <section class="content-section hidden" id="aboutSection">
+        <div class="about-panel"><div class="eyebrow muted">OUR PURPOSE</div><h2>Shopping should feel<br><em>clear, not complicated.</em></h2><p>BuyWise is a shopping intelligence workspace designed to help people discover, compare and evaluate products before buying. This first release is an interactive frontend preview using sample catalogue data. Live retailer prices, availability and checkout are not connected yet.</p><div class="about-pills"><span>Product discovery</span><span>Side-by-side comparison</span><span>Personal watchlist</span><span>Decision insights</span></div></div>
+      </section>
+      <footer class="footer"><span>© 2026 BuyWise</span><span>Make every purchase a considered one. <b>✳</b></span><span class="preview-label">MVP PREVIEW · SAMPLE DATA</span></footer>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+  <div class="modal-backdrop hidden" id="modalBackdrop"><div class="product-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><button class="modal-close" id="modalClose" aria-label="Close">×</button><div id="modalBody"></div></div></div>
+  <script src="app.js"></script>
+</body>
+</html>
