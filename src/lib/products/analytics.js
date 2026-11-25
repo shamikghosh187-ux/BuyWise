@@ -18,9 +18,9 @@ export function getMarketSummary(offers = []) {
 
   return {
     sampleSize: prices.length,
-    lowest: prices[0],
+    lowest: prices[0] ?? null,
     median,
-    highest: prices[prices.length - 1],
+    highest: prices[prices.length - 1] ?? null,
     spread: prices[prices.length - 1] - prices[0],
     average: prices.reduce((sum, value) => sum + value, 0) / prices.length,
   };
