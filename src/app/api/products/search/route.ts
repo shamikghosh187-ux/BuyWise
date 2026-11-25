@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { toSafeHttpUrl } from "@/lib/security/safe-url.js";
 
 type ShoppingResult = {
   product_id?: string;
@@ -25,16 +26,6 @@ const blockedTerms = [
   "vape", "vaping", "cigarette", "tobacco", "alcohol", "liquor",
   "betting", "casino", "gambling", "sportsbook"
 ];
-
-function safeUrl(value?: string) {
-  if (!value) return null;
-  try {
-    const url = new URL(value);
-    return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : null;
-  } catch {
-    return null;
-  }
-}
 
 export async function GET(request: NextRequest) {
   const query = (request.nextUrl.searchParams.get("q") || "").trim();
@@ -91,8 +82,8 @@ export async function GET(request: NextRequest) {
       oldPrice: item.old_price || null,
       rating: typeof item.rating === "number" ? item.rating : null,
       reviews: typeof item.reviews === "number" ? item.reviews : null,
-      image: safeUrl(item.thumbnail),
-      url: safeUrl(item.product_link || item.link),
+      image: toSafeHttpUrl(item.thumbnail),
+      url: toSafeHttpUrl(item.product_link || item.link),
       delivery: item.delivery || null,
       condition: item.second_hand_condition || null
     }));
