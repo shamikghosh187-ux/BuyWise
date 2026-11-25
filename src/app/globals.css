@@ -82,3 +82,43 @@ button{cursor:pointer}
 .notice{font-size:10px;color:#999d94;margin-top:15px}
 @media(max-width:850px){.hero{grid-template-columns:1fr}.hero-art{min-height:210px}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.topbar{height:64px;padding:0 16px}.top-link{display:none}.page{padding:24px 16px 60px}.hero{padding-top:15px}.hero h1{letter-spacing:-2px}.hero-art{min-height:190px}.stats{gap:7px}.stat{padding:13px 11px}.stat strong{font-size:18px}.stat span{font-size:9px}.product-grid{grid-template-columns:1fr 1fr;gap:9px}.product-visual{height:135px}.product-emoji{font-size:58px}.product-info{padding:11px}.product-name{font-size:12px}.product-desc{font-size:10px}.price{font-size:16px}.deal{display:none}.section-head h2{font-size:19px}.insight-panel{grid-template-columns:1fr;padding:20px}.insight-icon{display:none}.footer{gap:10px;flex-direction:column}}
+
+
+/* BuyWise MVP interactions */
+.product-visual{background:radial-gradient(circle at 50% 60%,#f4c6a4 0%,#eee9e1 48%,#e6e6df 100%)}
+.product-visual:after{content:"";position:absolute;width:150px;height:18px;bottom:24px;border-radius:50%;background:#00000012;filter:blur(10px)}
+.product-emoji{z-index:1;filter:drop-shadow(0 12px 10px #0002);transition:transform .25s}
+.product-card:hover .product-emoji{transform:translateY(-3px) scale(1.04)}
+.save-btn.saved{color:#df684a;background:#fff}
+.value-score{background:#edf4e8;color:#47713c;border-radius:6px;padding:6px 8px;font-size:10px;font-weight:800}
+.price-line{justify-content:space-between}
+.card-foot{gap:8px}
+.rating small{color:#999;font-size:9px}
+.details-link{border:0;background:transparent;color:var(--orange);font-size:10px;font-weight:700}
+.compare-full{width:100%;margin-top:12px;border:1px solid #e8e8e2;background:#fafaf8;color:#555b52;border-radius:8px;padding:9px;font-size:10px;font-weight:700}
+.compare-full.chosen{background:#fff0e9;border-color:#f5c3a9;color:#b84e25}
+.compare-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:#fff;padding:10px}
+.compare-table{width:100%;border-collapse:collapse;min-width:480px}
+.compare-table th,.compare-table td{text-align:left;padding:14px;border-bottom:1px solid var(--line);font-size:12px}
+.compare-table th{color:var(--orange);font-weight:800}
+.compare-table td:first-child{color:var(--muted);font-weight:600}
+.compare-table tr:last-child td{border-bottom:0}
+.compare-bar{gap:12px}
+.compare-bar .clear-compare{background:transparent;padding:8px 2px}
+.modal-backdrop{position:fixed;inset:0;background:#111b;z-index:50;display:grid;place-items:center;padding:18px}
+.product-modal{width:min(520px,100%);max-height:88vh;overflow:auto;position:relative;background:#fff;border-radius:18px;padding:25px;box-shadow:0 25px 80px #0004}
+.modal-close{position:absolute;right:16px;top:12px;border:0;background:#f2f2ee;border-radius:50%;width:30px;height:30px;font-size:20px}
+.modal-hero{height:130px;border-radius:12px;background:#f0eee8;display:grid;place-items:center;font-size:65px;margin-bottom:18px}
+.product-modal h2{font:800 23px Manrope,sans-serif;margin:7px 0}
+.product-modal>p{color:var(--muted);font-size:12px;line-height:1.7}
+.product-modal h3{font:700 13px Manrope,sans-serif;margin:20px 0 8px}
+.modal-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
+.modal-metrics div{background:#f6f6f2;border-radius:9px;padding:11px}
+.modal-metrics small,.modal-metrics strong{display:block}
+.modal-metrics small{font-size:8px;color:var(--muted)}
+.modal-metrics strong{font:800 14px Manrope,sans-serif;margin-top:5px}
+.spec-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:11px}
+.spec-row span{color:var(--muted)}
+.spec-row strong{text-align:right}
+.modal-disclaimer{border-top:1px solid var(--line);padding-top:12px;font-size:10px!important}
+@media(max-width:560px){.modal-metrics{grid-template-columns:1fr 1fr}.compare-bar{gap:8px;padding:10px 12px;font-size:10px}.compare-bar button{padding:8px 9px}}
