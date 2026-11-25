@@ -278,3 +278,157 @@ body{background:linear-gradient(180deg,#f8f6f2 0%,#f3f1ec 100%);color:var(--ink)
  .search-wrap{padding-left:12px}
  .search-wrap button{padding:11px 13px}
 }
+
+
+/* BuyWise emerald-night theme — inspired by the supplied dark retail reference */
+:root{
+  color-scheme:dark;
+  --bg:#080d0b;--surface:#101914;--ink:#edf6ef;--muted:#91a197;
+  --line:#20342a;--orange:#55d68b;--orange-soft:#102b1d;--green:#63df91;
+}
+html,body{background:#080d0b;color:#edf6ef}
+body{
+ background:
+  radial-gradient(ellipse at 50% -18%,#183b2a 0%,transparent 43%),
+  radial-gradient(ellipse at 92% 35%,#10291d 0%,transparent 34%),
+  #080d0b;
+}
+.topbar{
+ background:rgba(7,13,10,.88);border-bottom:1px solid #5bdf9222;
+ box-shadow:0 8px 35px #0008;backdrop-filter:blur(20px)
+}
+.brand{color:#f2fff5}
+.brand>span:last-child{color:#f2fff5}
+.brand>span:last-child span{color:#65e59a}
+.brand-mark{background:linear-gradient(145deg,#8af0ae,#21a95e);color:#062010;box-shadow:0 0 24px #40d77b55}
+.top-link{color:#b4c6b9}
+.top-link:hover,.top-link.selected-link{background:#62df9018;color:#8af0ae!important}
+.avatar{background:#173524;color:#a9f5c2;border:1px solid #63df9140}
+.page{color:#edf6ef}
+.eyebrow{color:#72e6a0}
+.eyebrow:before{background:#58d88e;box-shadow:0 0 12px #58d88e88}
+.hero h1{color:#f2f8f3}
+.hero h1 em{color:#68e69b;text-shadow:0 0 30px #43d77a35}
+.hero-copy{color:#9cafa3}
+.search-wrap{
+ background:#101a14;border:1px solid #31513d;border-radius:15px;
+ box-shadow:0 12px 40px #0007,0 0 30px #42ce7b0b
+}
+.search-wrap:focus-within{border-color:#5de493;box-shadow:0 0 0 4px #4cdb8420,0 12px 40px #0008}
+.search-wrap input{color:#f1fff4}
+.search-wrap input::placeholder{color:#74877a}
+.search-icon{color:#83a18d}
+.search-wrap button,.primary-btn{
+ background:linear-gradient(135deg,#75eaa5,#24ad63);color:#062111;
+ box-shadow:0 0 22px #3bd27a35;font-weight:800
+}
+.search-wrap button:hover,.primary-btn:hover{box-shadow:0 0 30px #3bd27a65}
+.search-hint{color:#809588}
+.hero-art{
+ background:radial-gradient(ellipse at 50% 110%,#17643b 0%,transparent 48%),linear-gradient(135deg,#101c15,#07100b 70%);
+ border:1px solid #4cbd793d;box-shadow:0 22px 70px #0009,0 0 45px #37ca7220
+}
+.hero-art:before{
+ background:radial-gradient(circle,#8af0ad 0%,#34c875 25%,#12683b 48%,transparent 72%);
+ opacity:.55;filter:blur(8px)
+}
+.hero-art:after{border-color:#8df0b333;box-shadow:0 0 0 24px #55df8c0a,0 0 0 48px #55df8c08,0 0 0 72px #55df8c05}
+.art-label,.art-bottom{color:#b7d2c0}
+.art-title{color:#f3fff6;text-shadow:0 3px 24px #0008}
+.art-chip{border-color:#74e8a54d;background:#55d68b12;color:#c9f8d8}
+.stats .stat,.stat{
+ background:linear-gradient(145deg,#111c15,#0c140f);border:1px solid #294432;
+ box-shadow:0 9px 30px #0005,inset 0 1px #ffffff05
+}
+.stat:before{background:linear-gradient(180deg,#8af0ad,#24ad63);box-shadow:0 0 12px #4cdb84}
+.stat strong{color:#effaf2}
+.stat span{color:#8fa397}
+.section-head h2{color:#eff8f1}
+.section-head p{color:#8fa397}
+.text-btn{color:#72e6a0}
+.category{
+ background:#101a14;color:#b6c8bb;border:1px solid #294332;
+ box-shadow:0 3px 12px #0003
+}
+.category:hover,.category.active{background:#1d5937;border-color:#4bd781;color:#eaffef;box-shadow:0 0 18px #37cb7520}
+.toolbar .result-count{color:#9bb0a1}
+.sort-select{background:#101a14;color:#e3f2e7;border-color:#31513d}
+.market-summary{
+ background:linear-gradient(145deg,#111c15,#0b130e);border:1px solid #294432;
+ box-shadow:0 8px 28px #0005
+}
+.market-summary span{color:#8ca597}
+.market-summary strong{color:#e9f8ed}
+.market-summary p{color:#81968a}
+.product-card{
+ background:linear-gradient(160deg,#121d16,#0d1510);border:1px solid #294432;
+ box-shadow:0 8px 28px #0006
+}
+.product-card:hover{border-color:#4fcf82;box-shadow:0 18px 45px #0008,0 0 24px #37cb7518}
+.product-visual{background:radial-gradient(ellipse at 50% 90%,#1d5133 0%,#14251a 48%,#0d1711 100%);border-bottom:1px solid #274432}
+.product-visual:after{background:#0008}
+.product-image{filter:drop-shadow(0 10px 20px #0008)}
+.no-image{color:#81968a}
+.product-tag{background:#173b27;color:#a9f4c1;border:1px solid #4bd78140}
+.save-btn{background:#102017ed;color:#b8d1c0;border:1px solid #3c6048;box-shadow:0 4px 14px #0008}
+.save-btn.saved{color:#75eaa5;background:#173b27}
+.product-category{color:#8eaa98}
+.product-name{color:#eff8f1}
+.live-price{color:#8af0ad;text-shadow:0 0 18px #45d78022}
+.old-price-line{color:#809488}
+.live-meta{color:#a4b8aa}
+.live-meta span:first-child{color:#c0d6c7}
+.live-meta span:first-child::first-letter{color:#f4c86a}
+.delivery-copy{color:#8fa397}
+.market-position.below-observed-median{background:#123b25;color:#8af0ad}
+.market-position.near-observed-median{background:#3b3218;color:#f0d78a}
+.market-position.above-observed-median{background:#3a2419;color:#ffb28c}
+.market-position.unknown{background:#1b2920;color:#a4b6aa}
+.compare-full{background:#142219;color:#b8d2c0;border-color:#31513d}
+.live-card-actions .compare-full{background:#142219;color:#b8d2c0;border-color:#31513d}
+.live-card-actions .compare-full:hover,.live-card-actions .compare-full.chosen{background:#17482c;border-color:#5de493;color:#a5f5be}
+.retailer-link{background:linear-gradient(135deg,#75eaa5,#24ad63);color:#062111;box-shadow:0 0 15px #3bd27a20}
+.retailer-link:hover{background:linear-gradient(135deg,#9af5bb,#3bca79);color:#062111;box-shadow:0 0 24px #3bd27a50}
+.no-link{color:#84968a}
+.empty-state,.loading-panel{
+ background:#101914;color:#9cafA2;border:1px dashed #34523e;box-shadow:0 8px 28px #0005
+}
+.error-panel{background:#291a13;border:1px solid #75432b;color:#ffd0b4}
+.error-panel span{color:#d9a17d}
+.loader{border-color:#234832;border-top-color:#75eaa5}
+.source-note,.notice{color:#809488}
+.insight-panel{
+ background:radial-gradient(ellipse at 90% 0%,#1c633b 0%,transparent 45%),linear-gradient(120deg,#111d15,#080f0b);
+ border:1px solid #3d8b5b66;box-shadow:0 18px 55px #0008,0 0 35px #37cb7512
+}
+.insight-panel .eyebrow{color:#83edaa!important}
+.insight-panel .eyebrow:before{background:#70e69e}
+.insight-panel h3{color:#f0fff4}
+.insight-panel p{color:#a2b9a9}
+.insight-icon{background:#58dc8b12;border-color:#70e69e55;color:#8af0ad;box-shadow:0 0 24px #37cb7520}
+.compare-bar{
+ background:rgba(13,25,17,.96);border:1px solid #4bd78155;color:#e8f8ed;
+ box-shadow:0 15px 45px #000b,0 0 25px #37cb7520;backdrop-filter:blur(18px)
+}
+.compare-bar button{background:linear-gradient(135deg,#75eaa5,#24ad63);color:#062111}
+.compare-bar .clear-compare{background:transparent;color:#a8c5b1}
+.compare-table-wrap{background:#101914;border:1px solid #294432}
+.compare-table th,.compare-table td{border-bottom:1px solid #263b2d;color:#dcebe0}
+.compare-table th{color:#80eaa6}
+.compare-table td:first-child{color:#91a99a}
+.compare-table a{color:#80eaa6}
+.footer{border-color:#23382a;color:#71877a}
+.modal-backdrop{background:#020805d9;backdrop-filter:blur(10px)}
+.product-modal{background:#111b15;border:1px solid #34543e;color:#edf8f0;box-shadow:0 25px 80px #000b,0 0 35px #37cb7518}
+.product-modal>p{color:#9db1a2}
+.product-modal h3{color:#e7f6eb}
+.modal-close{background:#1d3023;color:#d9f5e2}
+.modal-hero,.modal-metrics div{background:#19281e;color:#e8f7ec}
+.modal-metrics small{color:#91a99a}
+.spec-row{border-color:#294332}
+.spec-row span{color:#91a99a}
+.modal-disclaimer{border-color:#294332}
+@media(max-width:700px){
+ .topbar{background:rgba(7,13,10,.94)}
+ .category-row{padding-bottom:12px}
+}
