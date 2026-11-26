@@ -1,68 +1,37 @@
 # BuyWise
 
-**Find the right buy. At the right price.**
+**Make the smarter buy.**
 
-BuyWise is a shopping-intelligence MVP. It searches live Google Shopping listings for India through SerpApi, then lets people save and compare offers before opening the retailer's page.
+BuyWise is a shopping-intelligence workspace designed to help people research, understand and compare smartphones and laptops before choosing where to buy.
 
-## Features
+## Current build
 
-- Live product search (India locale)
-- Seller/source, listed price, image, rating and delivery details when supplied by the source
-- Open the original retailer offer
-- Sort results by price or rating
-- Compare up to three offers
-- Browser-persisted watchlist
-- Responsive product discovery interface
+This repository currently contains the first redesigned UI foundation:
+- Responsive discovery workspace for phones and laptops
+- Search, category filtering and sorting
+- Product save/watchlist interactions
+- Side-by-side comparison selection
+- Clear demo-data labeling
 
-## Local setup
+## Important data note
 
-1. Install dependencies: `npm install`
-2. Copy `.env.example` to `.env.local`
-3. Add your SerpApi key to `SERPAPI_KEY`
-4. Start the app: `npm run dev`
-5. Open http://localhost:3000
+The catalogue currently uses illustrative demo entries. Prices, ratings, product names and specifications are not live retailer data and must not be treated as purchase advice.
 
-The API key must stay on the server. Never add it to client-side code, commit it to Git, or paste it into chat.
+## Run locally
 
-## Shopping data provider
+```bash
+npm install
+npm run dev
+```
 
-BuyWise uses the SerpApi Google Shopping Results API for live search. The server route is `/api/products/search`. It requests India-localised results and returns a normalised subset of listing fields.
+Open http://localhost:3000.
 
-Provider documentation: https://serpapi.com/google-shopping-api
+## Roadmap
 
-The provider requires an API key. Provider plans, quotas and terms can change; check the provider's current account page before relying on it. Do not commit API keys. Add `SERPAPI_KEY` as a server-side environment variable in the deployment platform.
+1. Connect compliant retailer / affiliate product feeds.
+2. Build normalized product and variant matching.
+3. Add live offer comparison with source and freshness labels.
+4. Add price history and deal context.
+5. Add accounts, persistent watchlists and user preferences.
 
-## Data and trust
-
-Listings, prices, ratings, images, seller names and delivery details are supplied by the third-party source. They can be incomplete, delayed or changed by the retailer. BuyWise does not independently verify stock, warranty, seller legitimacy, delivery promises or final checkout price. Always check the retailer page before making a decision.
-
-BuyWise currently redirects shoppers to retailer pages. It does not take payments, place orders, or claim to be the seller.
-
-## Next milestones
-
-1. Add more permitted product feeds and retailer integrations.
-2. Persist price observations with timestamps for genuine price-history charts.
-3. Add seller, return-policy, warranty and delivery comparison where reliable data exists.
-4. Build transparent recommendation scoring that explains each factor.
-5. Add accounts and cloud-synced watchlists.
-
-## Stack
-
-- Next.js 15
-- React 19
-- TypeScript
-- SerpApi Google Shopping Results API
-
-
-## Expanded project modules
-
-- `src/lib/products/analytics.js`: observed market summary and explainable price-position labels.
-- `src/lib/products/sort.js`: reusable offer sorting.
-- `src/lib/products/storage.js`: defensive watchlist persistence.
-- `src/lib/search/query.js`: shared search-input validation.
-- `src/lib/security/safe-url.js`: HTTP(S)-only URL validation.
-- `src/app/api/health/route.ts`: deployment and shopping-provider readiness check.
-- `tests/products.test.js`: offline unit tests using Node's built-in test runner.
-- `docs/`: architecture, data-trust and development notes.
-
-Run `npm test` for the offline utility tests and `npm run typecheck` for TypeScript checking.
+BuyWise is a decision layer, not a marketplace or checkout provider.
