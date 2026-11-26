@@ -16,11 +16,11 @@ const intelligenceScore=(p:Product)=>{const price=best(p);if(price===null||p.cat
 const specNumber=(p:Product,pattern:RegExp)=>{const m=p.specs.join(" ").match(pattern);return m?Number(m[1]):0;};
 const explainPair=(leader:Product,other:Product)=>{
 const points:[string,number,number][]=[
-["RAM",specNumber(leader,/(\\d+) GB RAM/i),specNumber(other,/(\\d+) GB RAM/i)],
-["storage",specNumber(leader,/(\\d+) GB storage/i),specNumber(other,/(\\d+) GB storage/i)],
-["camera resolution",specNumber(leader,/(\\d+) MP camera/i),specNumber(other,/(\\d+) MP camera/i)],
-["battery capacity",specNumber(leader,/(\\d+) mAh battery/i),specNumber(other,/(\\d+) mAh battery/i)],
-["display refresh rate",specNumber(leader,/(\\d+) Hz display/i),specNumber(other,/(\\d+) Hz display/i)]
+["RAM",specNumber(leader,/(\d+) GB RAM/i),specNumber(other,/(\d+) GB RAM/i)],
+["storage",specNumber(leader,/(\d+) GB storage/i),specNumber(other,/(\d+) GB storage/i)],
+["camera resolution",specNumber(leader,/(\d+) MP camera/i),specNumber(other,/(\d+) MP camera/i)],
+["battery capacity",specNumber(leader,/(\d+) mAh battery/i),specNumber(other,/(\d+) mAh battery/i)],
+["display refresh rate",specNumber(leader,/(\d+) Hz display/i),specNumber(other,/(\d+) Hz display/i)]
 ];
 const wins=points.filter(x=>x[1]>x[2]&&x[2]>0).map(x=>x[0]);
 const loses=points.filter(x=>x[1]<x[2]&&x[1]>0).map(x=>x[0]);
