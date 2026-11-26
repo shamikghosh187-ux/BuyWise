@@ -1,37 +1,37 @@
 # BuyWise
 
-**Make the smarter buy.**
+BuyWise is an independent shopping-intelligence workspace for smartphones and laptops. It helps people discover products, compare retailer offers, keep a shortlist and build a price trail from authorised retailer feeds.
 
-BuyWise is a shopping-intelligence workspace designed to help people research, understand and compare smartphones and laptops before choosing where to buy.
+## Current MVP
+- Search and filter by category, model, specifications and budget.
+- Import authorised retailer/affiliate CSV feeds.
+- Group offers by product name and variant, retaining retailer, product URL and import timestamp.
+- Compare up to four products side by side.
+- View retailer offers sorted by price and open the source retailer page.
+- Save a local watchlist, comparison history and target prices.
+- Record price snapshots each time a feed is imported.
+- Keep fictional starter examples clearly labelled and separate from imported offers.
 
-## Current build
+## Feed format
+Required CSV headers: title, price, retailer, url
+Optional: brand, category, variant, sku, specs
 
-This repository currently contains the first redesigned UI foundation:
-- Responsive discovery workspace for phones and laptops
-- Search, category filtering and sorting
-- Product save/watchlist interactions
-- Side-by-side comparison selection
-- Clear demo-data labeling
+Example:
+title,brand,category,variant,price,retailer,url,specs
+Example Phone,Example,Phones,8GB 256GB,34999,Example Store,https://example.com/product,8GB RAM;256GB storage
 
-## Important data note
-
-The catalogue currently uses illustrative demo entries. Prices, ratings, product names and specifications are not live retailer data and must not be treated as purchase advice.
+Use only feeds supplied by retailer or affiliate programmes you are authorised to access. The app does not scrape retailer sites or bypass access controls.
 
 ## Run locally
-
-```bash
 npm install
 npm run dev
-```
 
-Open http://localhost:3000.
+## Data and privacy
+Imported feed data, watchlists, comparison history, price snapshots and target prices are stored in this browser's local storage. They are not synced between devices or accounts yet. Starter examples are fictional and do not represent current market prices.
 
-## Roadmap
-
-1. Connect compliant retailer / affiliate product feeds.
-2. Build normalized product and variant matching.
-3. Add live offer comparison with source and freshness labels.
-4. Add price history and deal context.
-5. Add accounts, persistent watchlists and user preferences.
-
-BuyWise is a decision layer, not a marketplace or checkout provider.
+## Next milestones
+1. Add supported official affiliate/API connectors for specific retailers.
+2. Add account-backed cloud sync and multi-device persistence.
+3. Improve variant matching with GTIN/MPN identifiers and confidence review.
+4. Build richer price-history charts and explainable buy/wait assessments.
+5. Add opt-in price alerts and retailer/seller trust signals.
