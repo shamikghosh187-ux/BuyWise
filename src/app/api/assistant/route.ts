@@ -13,7 +13,25 @@ export async function POST(request:NextRequest){
   if(mode==="finder"&&!query)return NextResponse.json({error:"Describe what you want to find."},{status:400});
   const system=mode==="test"?"Reply with exactly: Groq connection successful.":`You are BuyWise's shopping-intent engine. Understand the buyer's natural-language request and select the best matching products ONLY from the supplied catalogue. Never invent products, IDs, specifications, retailers, offers or prices. Some catalogue data is simulated; preserve that distinction. Interpret category, budget, shorthand like 20k, and priorities including gaming/performance, battery, camera, display, portability and value. A budget written in the query overrides the separate budget field. If budget exists, only select products at or below it. If none fit, return rankedIds empty and explain. Do not return markdown. Return exactly JSON: {"budget":number|null,"category":"Phones"|"Laptops","priorities":string[],"rankedIds":string[],"explanation":string}. rankedIds must be exact IDs from catalogue, best first, maximum 4. Catalogue: ${JSON.stringify(catalog)}`;
   const messages=mode==="test"?[{role:"system",content:system},{role:"user",content:"Test connection."}]:[{role:"system",content:system},{role:"user",content:`Buyer request: ${query}\nBudget field INR: ${Number.isFinite(body.budget)?body.budget:"not supplied"}\nReturn JSON only.`}];
-  const upstream=await fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",headers:{Authorization:"Bearer "+apiKey,"Content-Type":"application/json"},body:JSON.stringify({model:"openai/gpt-oss-120b",messages,temperature:0.2,max_tokens:900,response_format:mode==="finder"?{type:"json_object"}:undefined}),cache:"no-store"});
+  const upstream=await fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",headers:{Authorization:"Bearer "+apiKey,"Content-Type":"application/json"},body:JSON.stringify({model:"openai/gpt-oss-120b",messages,temperature:0.2,max_tokens:900,response_format:mode==="finder"?{
+    type:"json_schema",
+    json_schema:{
+     name:"buywise_shopping_match",
+     strict:true,
+     schema:{
+      type:"object",
+      properties:{
+       budget:{anyOf:[{type:"number"},{type:"null"}]},
+       category:{type:"string",enum:["Phones","Laptops"]},
+       priorities:{type:"array",items:{type:"string"}},
+       rankedIds:{type:"array",items:{type:"string"}},
+       explanation:{type:"string"}
+      },
+      required:["budget","category","priorities","rankedIds","explanation"],
+      additionalProperties:false
+     }
+    }
+   }:undefined}),cache:"no-store"});
   const result=await upstream.json().catch(()=>({})) as {error?:{message?:string};choices?:Array<{message?:{content?:string}} >};
   if(!upstream.ok){
    const upstreamMessage=result.error?.message||"";
