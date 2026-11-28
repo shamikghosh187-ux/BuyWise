@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "BuyWise — Make the smarter buy",
-  description: "A calmer way to research, compare and choose your next phone or laptop."
+  title: "ShopIntel — Buy Smarter. Not Harder.",
+  description: "An AI-powered shopping decision assistant to discover products, compare offers and make confident buying decisions."
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

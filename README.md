@@ -1,37 +1,61 @@
-# BuyWise
+# ShopIntel
 
-BuyWise is an independent shopping-intelligence workspace for smartphones and laptops. It helps people discover products, compare retailer offers, keep a shortlist and build a price trail from authorised retailer feeds.
+**Buy Smarter. Not Harder.** ShopIntel is an AI-powered shopping decision assistant. It helps shoppers describe what they need, explore available product data, compare options and understand trade-offs before continuing to a retailer.
 
-## Current MVP
-- Search and filter by category, model, specifications and budget.
-- Import authorised retailer/affiliate CSV feeds.
-- Group offers by product name and variant, retaining retailer, product URL and import timestamp.
-- Compare up to four products side by side.
-- View retailer offers sorted by price and open the source retailer page.
-- Save a local watchlist, comparison history and target prices.
-- Record price snapshots each time a feed is imported.
-- Keep fictional starter examples clearly labelled and separate from imported offers.
+This repository was previously used for BuyWise. The application is now branded as **ShopIntel**.
 
-## Feed format
-Required CSV headers: title, price, retailer, url
-Optional: brand, category, variant, sku, specs
+## Current experience
 
-Example:
-title,brand,category,variant,price,retailer,url,specs
-Example Phone,Example,Phones,8GB 256GB,34999,Example Store,https://example.com/product,8GB RAM;256GB storage
+- Natural-language shopping search powered by a Groq model configured on the server.
+- Product recommendations grounded in the catalogue supplied to the model.
+- Contextual follow-up questions about the current shortlist.
+- Product discovery, category filtering, price sorting and imported-source filtering.
+- Side-by-side comparison for up to four products.
+- Product detail view with a Shopping Risk Report that distinguishes available catalogue information from missing or unverified information.
+- Local saved products, comparison history, imported feed records, price snapshots and target prices.
+- CSV import for retailer or affiliate product feeds the operator is authorised to use.
 
-Use only feeds supplied by retailer or affiliate programmes you are authorised to access. The app does not scrape retailer sites or bypass access controls.
+## Current data coverage
+
+The starter catalogue contains fictional phone and laptop examples for interface testing. These are labelled as preview/simulated records and are not real products, verified offers or current market prices.
+
+Imported CSV offers are stored locally in the current browser. A manual CSV import is not a live retailer integration. Retailers are only presented as available source filters when they exist in the imported feed data. Amazon, Flipkart, Myntra, AJIO and other retailers must not be described as connected until authorised integrations are built and tested.
+
+The CSV parser currently supports phone/laptop categorisation. Fashion, Home & Kitchen, Beauty, Sports and Books & Lifestyle appear as planned category directions, not active product engines yet.
+
+## CSV feed format
+
+Required headers: title, price, retailer, url
+
+Optional headers: brand, category, variant, sku, specs
+
+Use only retailer/affiliate data you are authorised to access. The app does not scrape retailer sites or bypass access controls.
 
 ## Run locally
+
 npm install
 npm run dev
+npm run typecheck
+npm run build
 
-## Data and privacy
-Imported feed data, watchlists, comparison history, price snapshots and target prices are stored in this browser's local storage. They are not synced between devices or accounts yet. Starter examples are fictional and do not represent current market prices.
+## AI configuration
 
-## Next milestones
-1. Add supported official affiliate/API connectors for specific retailers.
-2. Add account-backed cloud sync and multi-device persistence.
-3. Improve variant matching with GTIN/MPN identifiers and confidence review.
-4. Build richer price-history charts and explainable buy/wait assessments.
-5. Add opt-in price alerts and retailer/seller trust signals.
+Add a Groq API key through the in-app Settings dialog. The key is stored in this browser's local storage and sent to the ShopIntel server route when the user requests AI search or follow-up analysis. Do not commit API keys or .env secrets.
+
+## Data, trust and privacy
+
+Imported feed data, watchlists, comparison history, price snapshots and target prices are currently stored in this browser's local storage. They are not synced between devices or accounts yet.
+
+Do not invent prices, discounts, stock, ratings, review counts, seller reputation, delivery dates, warranty, return periods or price history. Show missing or unverified details as such. Preserve source and timestamp context for each imported offer. The Shopping Risk Report is a decision aid, not a guarantee of product safety or seller conduct.
+
+## Roadmap
+
+1. Validate official/authorised product-data access and partner terms for each retailer.
+2. Build a normalised product/variant/offer data model with source identifiers and timestamps.
+3. Expand category-specific intelligence beyond the current phone/laptop starter catalogue.
+4. Add secure account-backed storage and user privacy controls.
+5. Add Shopping Risk Reports with review-source context, missing-data warnings and seller/policy information where permitted.
+6. Add operational monitoring for data freshness, provider usage, errors and costs.
+7. Pilot real shopping sessions and measure costs before introducing any paid plan or research quota.
+
+Premium price and session quotas remain proposals until measured usage and operating costs validate them.
