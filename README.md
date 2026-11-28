@@ -19,7 +19,7 @@ This repository was previously used for BuyWise. The application is now branded 
 
 The starter catalogue contains fictional phone and laptop examples for interface testing. These are labelled as preview/simulated records and are not real products, verified offers or current market prices.
 
-Imported CSV offers are stored locally in the current browser. A manual CSV import is not a live retailer integration. Retailers are only presented as available source filters when they exist in the imported feed data. Amazon, Flipkart, Myntra, AJIO and other retailers must not be described as connected until authorised integrations are built and tested.
+Imported CSV offers and permitted product-image URLs are stored locally in the current browser. A manual CSV import is not a live retailer integration. Retailers are only presented as available source filters when they exist in the imported feed data. Amazon, Flipkart, Myntra, AJIO and other retailers must not be described as connected until authorised integrations are built and tested.
 
 The CSV parser currently supports phone/laptop categorisation. Fashion, Home & Kitchen, Beauty, Sports and Books & Lifestyle appear as planned category directions, not active product engines yet.
 
@@ -29,7 +29,7 @@ Required headers: title, price, retailer, url
 
 Optional headers: brand, category, variant, sku, specs
 
-Use only retailer/affiliate data you are authorised to access. The app does not scrape retailer sites or bypass access controls.
+Use only retailer/affiliate data and product images you are authorised to access. The `image_url` column must point to an image the feed permits ShopIntel to display. The app does not scrape retailer sites or bypass access controls.
 
 ## Run locally
 
