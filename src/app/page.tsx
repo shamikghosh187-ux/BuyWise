@@ -1,6 +1,6 @@
 "use client";
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDownUp, ArrowRight, Bookmark, Check, ChevronDown, CircleHelp, Command, Compass, FileUp, Heart, Laptop, Menu, Search, ShieldCheck, SlidersHorizontal, Smartphone, Sparkles, TrendingDown, X, Upload, History, Bell, ExternalLink, Settings, Bot, Send, Eye, EyeOff, Trash2, LoaderCircle, MessageCircle, KeyRound } from "lucide-react";
+import { ArrowDownUp, ArrowRight, Bookmark, Check, ChevronDown, CircleHelp, Command, Compass, FileUp, Heart, Laptop, Search, ShieldCheck, SlidersHorizontal, Smartphone, Sparkles, TrendingDown, X, Upload, History, Bell, ExternalLink, Settings, Bot, Send, Eye, EyeOff, Trash2, LoaderCircle, MessageCircle, KeyRound } from "lucide-react";
 
 type Category="All"|"Phones"|"Laptops";
 type Offer={retailer:string;price:number;url:string;checkedAt:string;sku:string};
@@ -38,7 +38,7 @@ function Visual({product}:{product:Product}){return <div className={"product-vis
 
 export default function Home(){
 const [products,setProducts]=useState<Product[]>(DEMO),[saved,setSaved]=useState<string[]>([]),[compare,setCompare]=useState<string[]>([]),[snapshots,setSnapshots]=useState<Snapshot[]>([]),[targets,setTargets]=useState<Target[]>([]),[history,setHistory]=useState<string[][]>([]);
-const [category,setCategory]=useState<Category>("All"),[query,setQuery]=useState(""),[sort,setSort]=useState("Recommended"),[activeNav,setActiveNav]=useState("Discover"),[menuOpen,setMenuOpen]=useState(false),[compareOpen,setCompareOpen]=useState(false),[importOpen,setImportOpen]=useState(false),[detail,setDetail]=useState<Product|null>(null),[notice,setNotice]=useState(""),[budget,setBudget]=useState(""),[targetInput,setTargetInput]=useState(""),[storeFilter,setStoreFilter]=useState("All stores");
+const [category,setCategory]=useState<Category>("All"),[query,setQuery]=useState(""),[sort,setSort]=useState("Recommended"),[activeNav,setActiveNav]=useState("Discover"),[compareOpen,setCompareOpen]=useState(false),[importOpen,setImportOpen]=useState(false),[detail,setDetail]=useState<Product|null>(null),[notice,setNotice]=useState(""),[budget,setBudget]=useState(""),[targetInput,setTargetInput]=useState(""),[storeFilter,setStoreFilter]=useState("All stores");
 const [finderQuery,setFinderQuery]=useState("I need a phone under ₹20,000 for gaming and long battery life"),[finderBudget,setFinderBudget]=useState("20000"),[finderSubmitted,setFinderSubmitted]=useState(false),[finderBusy,setFinderBusy]=useState(false),[finderAI,setFinderAI]=useState<FinderAIResult|null>(null),[finderError,setFinderError]=useState("");
 const [followupMessages,setFollowupMessages]=useState<FollowupMessage[]>([]),[followupInput,setFollowupInput]=useState(""),[followupBusy,setFollowupBusy]=useState(false),[followupError,setFollowupError]=useState("");
 const [settingsOpen,setSettingsOpen]=useState(false),[groqKey,setGroqKey]=useState(""),[groqKeyDraft,setGroqKeyDraft]=useState(""),[showGroqKey,setShowGroqKey]=useState(false),[keyTesting,setKeyTesting]=useState(false),[keyStatus,setKeyStatus]=useState("");
@@ -58,7 +58,6 @@ const comparisonLeader=[...compareProducts].sort((a,b)=>(intelligenceScore(b)||0
 
 const makeComparison=()=>{if(compare.length>=2){setHistory(v=>[[...compare],...v].slice(0,20));setCompareOpen(true);}else setNotice("Select at least two products to compare.");};
 const addTarget=(id:string)=>{const n=Number(targetInput.replace(/[₹,\s]/g,""));if(!Number.isFinite(n)||n<=0){setNotice("Enter a valid target price.");return;}setTargets(v=>[...v.filter(t=>t.productId!==id),{productId:id,target:n}]);setTargetInput("");setNotice("Target saved in this browser. It is checked when you import an updated feed.");};
-const nav=(name:string)=>{setActiveNav(name);setMenuOpen(false);if(name==="Compare")makeComparison();};
 const shown=activeNav==="Watchlist"?visible.filter(p=>saved.includes(p.id)):activeNav==="Discover"?visible:[];
 const realCount=products.filter(p=>p.source==="feed").length;
 const smartPicks=merged.filter(p=>p.category==="Phones").map(p=>({product:p,score:intelligenceScore(p)})).filter(x=>x.score!==null).sort((a,b)=>(b.score||0)-(a.score||0));
@@ -67,7 +66,7 @@ const parsedBudget=(()=>{const text=finderQuery.toLowerCase();const match=text.m
 const needText=finderQuery.toLowerCase();
 const priorities=["gaming","battery","camera","display","value"].filter(p=>needText.includes(p));
 const weights={gaming:priorities.includes("gaming")?0.34:0.08,battery:priorities.includes("battery")?0.30:0.08,camera:priorities.includes("camera")?0.30:0.08,display:priorities.includes("display")?0.30:0.08,value:priorities.includes("value")?0.30:0.08};
-const recommendationPool=merged.filter(p=>p.category==="Phones"&&best(p)!==null);
+const recommendationPool=merged.filter(p=>best(p)!==null);
 const rankedRecommendations=recommendationPool.map(product=>{
 const price=best(product)??0,ram=specNumber(product,/([0-9]+) GB RAM/i),storage=specNumber(product,/([0-9]+) GB storage/i),camera=specNumber(product,/([0-9]+) MP camera/i),battery=specNumber(product,/([0-9]+) mAh battery/i),hz=specNumber(product,/([0-9]+) Hz display/i);
 const metrics={gaming:Math.min(100,(ram/12)*65+(hz/144)*20+(storage/512)*15),battery:Math.min(100,battery/6500*100),camera:Math.min(100,camera/200*100),display:Math.min(100,hz/144*100),value:Math.max(0,100-(price/Math.max(parsedBudget,1))*55)};
@@ -80,11 +79,11 @@ const submitFinder=async()=>{
  if(!groqKey){setGroqKeyDraft(groqKey);setSettingsOpen(true);setKeyStatus("Add your Groq API key to power shopping search.");return;}
  setFinderBusy(true);setFinderError("");setFinderAI(null);setFinderSubmitted(false);setFollowupMessages([]);setFollowupInput("");setFollowupError("");
  try{
-  const catalog=merged.filter(p=>p.category==="Phones").map(p=>({id:p.id,name:p.name,brand:p.brand,variant:p.variant,price:best(p),specifications:p.specs,simulated:p.source==="demo"}));
+  const catalog=merged.filter(p=>best(p)!==null).map(p=>({id:p.id,name:p.name,brand:p.brand,variant:p.variant,category:p.category,price:best(p),specifications:p.specs,simulated:p.source==="demo"}));
   const response=await fetch("/api/assistant",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({apiKey:groqKey,mode:"finder",query:finderQuery,budget:Number(finderBudget)||null,catalog})});
   const data=await response.json();
   if(!response.ok)throw new Error(data.error||"Shopping search failed.");
-  setFinderAI(data.result as FinderAIResult);setFinderSubmitted(true);setCategory("Phones");setActiveNav("Discover");setQuery("");setBudget("");
+  setFinderAI(data.result as FinderAIResult);setFinderSubmitted(true);setCategory(data.result.category==="Laptops"?"Laptops":"Phones");setActiveNav("Discover");setQuery("");setBudget("");
  }catch(error){setFinderError(error instanceof Error?error.message:"Could not complete shopping search.");}
  finally{setFinderBusy(false);}
 };
