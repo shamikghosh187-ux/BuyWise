@@ -1,10 +1,10 @@
-# BuyWise — ShopIntel blueprint alignment
+# ShopIntel — product blueprint alignment
 
-This document records how the two supplied ShopIntel blueprints map to the existing BuyWise application. The ShopIntel name is described by the UI document as a working name; BuyWise remains the repository and product name unless deliberately changed.
+This document records how the two supplied ShopIntel blueprints map to the ShopIntel application.
 
 ## Product boundary
 
-BuyWise should first behave as a shopping discovery and decision-intelligence layer, not as a retailer or a marketplace. Customers research and compare products in BuyWise, then continue to the retailer for checkout. A unified cart or checkout is explicitly outside the initial platform model.
+ShopIntel should first behave as a shopping discovery and decision-intelligence layer, not as a retailer or a marketplace. Customers research and compare products in ShopIntel, then continue to the retailer for checkout. A unified cart or checkout is explicitly outside the initial platform model.
 
 ## Customer journey
 
@@ -25,9 +25,9 @@ BuyWise should first behave as a shopping discovery and decision-intelligence la
 - Do not describe a CSV import as a live retailer integration. A store should only be described as connected/searchable after an authorised integration is working reliably.
 - Retailers keep checkout in the initial model. Do not imply ShopIntel/BuyWise sells or fulfils third-party products.
 
-## Current BuyWise implementation snapshot
+## Current ShopIntel implementation snapshot
 
-The root application is Next.js. It currently has a phone/laptop catalogue, Groq-powered shopping search and shortlist follow-ups, product comparison, local saved items/history, target-price tracking and browser-based CSV feed import. The imported feed data and the simulated demo catalogue are different sources; demo products and offers must remain visibly marked as simulated.
+The root application is Next.js. It currently has a phone/laptop catalogue, Groq-powered shopping search and shortlist follow-ups, product comparison, local saved items/history, target-price tracking and browser-based CSV feed import. The application has been rebranded from BuyWise to ShopIntel and the interface follows the supplied indigo/lavender design direction. The imported feed data and the simulated demo catalogue are different sources; demo products and offers must remain visibly marked as simulated.
 
 The product-detail view now includes a Shopping Risk Report panel. It separates specifications and offer data currently present in the catalogue from review, seller, stock, delivery, return, warranty and reliability information that the current data model does not establish.
 
